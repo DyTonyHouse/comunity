@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.maurice.community.mapper.comunity.QuestionMapper">
+    <resultMap id="Question-r" type="com.maurice.community.entity.Question">
+        <result column="user_id" property="userId"/>
+        <result column="title" property="title"/>
+        <result column="describtion" property="describtion"/>
+        <result column="tags" property="tags"/>
+        <result column="gmt_create" property="gmtCreate"/>
+        <result column="gmt_modified" property="gmtModified"/>
+        <result column="view_count" property="viewCount"/>
+        <result column="comment_count" property="commentCount"/>
+        <result column="like_count" property="likeCount"/>
+    </resultMap>
+
+    <insert id="insertQuestion" parameterType="com.maurice.community.entity.Question">
+        insert into question (user_id, title, describtion, tags, gmt_create, gmt_modified)
+        values (
+          #{userId},
+          #{title},
+          #{describtion},
+          #{tags},
+          #{gmtCreate},
+          #{gmtModified}
+        )
+    </insert>
+</mapper>

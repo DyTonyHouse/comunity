@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.UUID;
@@ -50,6 +51,7 @@ public class AuthorizeController {
         accessToken.setState(state);
 
         String token = githubProvider.getAccessToken(accessToken);
+
         GithubUser githubUser = githubProvider.getGithubUser(token);
 
         if (githubUser != null){
@@ -59,9 +61,18 @@ public class AuthorizeController {
             user.setToken(UUID.randomUUID().toString());
             user.setGmtCreate(System.currentTimeMillis());
             user.setGmtModified(user.getGmtCreate());
+            user.setAvatarUrl(githubUser.getAvatar_url());
 
+            /*
+             * 老版本 写入cookie和session (cookie默认写入)
             servletRequest.getSession().setAttribute("user", githubUser);
+            */
+
+            //插入数据库的过程相当于写入 session
             userService.insertUser(user);
+            //手动写入cookie
+            servletResponse.addCookie(new Cookie("token", user.getToken()));
+
 
             return "redirect:/";
         }else {

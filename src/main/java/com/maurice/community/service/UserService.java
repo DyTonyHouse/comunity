@@ -18,4 +18,9 @@ public class UserService {
     public void insertUser(User user){
         userMapper.insertUser(user);
     }
+
+    public User findByToken(String token) {
+        User user = userMapper.findBytoken(token);
+        return user;
+    }
 }
