@@ -65,7 +65,6 @@ public class PublishController {
         question.setTags(tags);
         question.setGmtCreate(System.currentTimeMillis());
         question.setGmtModified(question.getGmtCreate());
-        question.setAvatarUrl(user.getAvatarUrl());
 
         questionService.insertQuestion(question);
         return "redirect:/";

@@ -1,5 +1,6 @@
-package com.maurice.community.entity;
+package com.maurice.community.dto;
 
+import com.maurice.community.entity.User;
 import lombok.Data;
 
 /**
@@ -8,7 +9,7 @@ import lombok.Data;
  * @Description:
  */
 @Data
-public class Question {
+public class QuestionDTO {
     private Integer id;
     private String userId;
     private String title;
@@ -19,4 +20,5 @@ public class Question {
     private Integer viewCount;
     private Integer commentCount;
     private Integer likeCount;
+    private User user;
 }

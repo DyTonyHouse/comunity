@@ -23,4 +23,9 @@ public class UserService {
         User user = userMapper.findBytoken(token);
         return user;
     }
+
+    public User findByAccessId(String userId) {
+        User user = userMapper.findByAccessId(userId);
+        return user;
+    }
 }

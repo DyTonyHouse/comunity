@@ -1,7 +1,10 @@
 package com.maurice.community.mapper.comunity;
 
+import com.maurice.community.dto.QuestionDTO;
 import com.maurice.community.entity.Question;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * @Author: Maurice
@@ -11,4 +14,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface QuestionMapper {
     void insertQuestion(Question question);
+
+    List<Question> list();
 }
