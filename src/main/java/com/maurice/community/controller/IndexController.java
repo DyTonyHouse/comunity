@@ -1,5 +1,6 @@
 package com.maurice.community.controller;
 
+import com.maurice.community.dto.PaginationDTO;
 import com.maurice.community.dto.QuestionDTO;
 import com.maurice.community.entity.Question;
 import com.maurice.community.entity.User;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.Cookie;
@@ -34,27 +36,21 @@ public class IndexController {
     private QuestionService questionService;
 
     @GetMapping("/")
-    public String index(HttpServletRequest servletRequest,
+    public String index(@RequestParam(name = "page", defaultValue = "1") Integer currentPage,
+                        @RequestParam(name = "size", defaultValue = "2") Integer size,
+                        HttpServletRequest servletRequest,
                         Model model){
+        System.out.println("currentPage:============="+currentPage);
+        System.out.println("size:============="+size);
         String token = Httpd.getToken(servletRequest);
         if (token != null){
             User user = userService.findByToken(token);
             servletRequest.getSession().setAttribute("user",user);
         }
 
-        List<Question> questionList = questionService.list();
-        List<QuestionDTO> questionDTOS = new ArrayList<>();
-        for (Question question : questionList) {
-            System.out.println("question:=============="+question);
-            User user = userService.findByAccessId(question.getUserId());
-            QuestionDTO questionDTO = new QuestionDTO();
-            BeanUtils.copyProperties(question,questionDTO);
-            System.out.println("user:=============="+user);
-            questionDTO.setUser(user);
-            questionDTOS.add(questionDTO);
+        PaginationDTO paginationDTO = questionService.list(currentPage, size);
 
-        }
-        model.addAttribute("questions", questionDTOS);
+        model.addAttribute("questions", paginationDTO);
         return "index";
     }
 

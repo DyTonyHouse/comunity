@@ -26,9 +26,14 @@
         )
     </insert>
 
-    <select id="list" resultMap="Question-r">
+    <select id="list" parameterType="java.lang.Integer" resultMap="Question-r">
         select id, user_id, title, describtion, tags, question.gmt_create, question.gmt_modified, view_count, comment_count, like_count
         from question
-        order by gmt_create desc
+        order by gmt_create desc limit #{offset}, #{size}
+    </select>
+
+    <select id="getCount" resultType="java.lang.Integer">
+        select count(id)
+        from question
     </select>
 </mapper>

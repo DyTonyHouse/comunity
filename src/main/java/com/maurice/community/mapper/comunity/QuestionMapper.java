@@ -15,5 +15,7 @@ import java.util.List;
 public interface QuestionMapper {
     void insertQuestion(Question question);
 
-    List<Question> list();
+    List<Question> list(Integer offset, Integer size);
+
+    Integer getCount();
 }
