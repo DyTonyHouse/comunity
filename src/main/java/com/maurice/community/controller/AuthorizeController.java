@@ -3,7 +3,6 @@ package com.maurice.community.controller;
 import com.maurice.community.entity.AccessToken;
 import com.maurice.community.entity.GithubUser;
 import com.maurice.community.entity.User;
-import com.maurice.community.mapper.comunity.UserMapper;
 import com.maurice.community.provider.GithubProvider;
 import com.maurice.community.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +11,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.UUID;
 
 /**
  * @Author: Maurice
@@ -41,8 +38,8 @@ public class AuthorizeController {
     @GetMapping("/callback")
     public String callBack(@RequestParam(name = "code") String code,
                            @RequestParam(name = "state") String state,
-                           HttpServletRequest servletRequest,
-                           HttpServletResponse servletResponse){
+                           HttpServletResponse servletResponse,
+                           HttpServletRequest servletRequest){
         AccessToken accessToken = new AccessToken();
         accessToken.setClient_id(clientId);
         accessToken.setClient_secret(clientSecret);
@@ -50,34 +47,18 @@ public class AuthorizeController {
         accessToken.setCode(code);
         accessToken.setState(state);
 
-        String token = githubProvider.getAccessToken(accessToken);
+        String accessId = githubProvider.getAccessToken(accessToken);
 
-        GithubUser githubUser = githubProvider.getGithubUser(token);
+        GithubUser githubUser = githubProvider.getGithubUser(accessId);
 
-        if (githubUser != null){
-            User user = new User();
-            user.setAccessId(githubUser.getId());
-            user.setName(githubUser.getName());
-            user.setToken(UUID.randomUUID().toString());
-            user.setGmtCreate(System.currentTimeMillis());
-            user.setGmtModified(user.getGmtCreate());
-            user.setAvatarUrl(githubUser.getAvatar_url());
-
-            /*
-             * 老版本 写入cookie和session (cookie默认写入)
-            servletRequest.getSession().setAttribute("user", githubUser);
-            */
-
+        if (githubUser != null) {
+            User user = userService.findByAccessId(githubUser.getId());
             //插入数据库的过程相当于写入 session
-            userService.insertUser(user);
-            //手动写入cookie
-            servletResponse.addCookie(new Cookie("token", user.getToken()));
-
+            userService.createOrUpdate(user, githubUser, servletResponse, servletRequest);
 
             return "redirect:/";
-        }else {
+        } else {
             return "redirect:/";
         }
-
     }
 }

@@ -16,4 +16,8 @@ public interface UserMapper {
     User findBytoken(String token);
 
     User findByAccessId(String userId);
+
+    void create(User user);
+
+    void update(User user);
 }

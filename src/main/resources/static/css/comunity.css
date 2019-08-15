@@ -21,3 +21,17 @@ body{
     font-weight: normal;
     color: #999;
 }
+
+.media-heading-a{
+    color: #337ab7;
+    text-decoration: none;
+}
+
+.media-body {
+    padding-top: 10px;
+}
+
+.media-heading {
+    margin-top: 0;
+    margin-bottom: 5px;
+}

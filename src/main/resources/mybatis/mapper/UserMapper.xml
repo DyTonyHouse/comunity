@@ -11,7 +11,7 @@
         <result column="avatar_url" property="avatarUrl"/>
     </resultMap>
 
-    <insert id="insertUser" parameterType="com.maurice.community.entity.User">
+    <insert id="create" parameterType="com.maurice.community.entity.User">
         insert into user (access_id, name, token, gmt_create, gmt_modified, avatar_url)
         values (
           #{accessId},
@@ -22,6 +22,11 @@
           #{avatarUrl}
         )
     </insert>
+
+    <update id="update" parameterType="com.maurice.community.entity.User">
+        update user
+        set token = #{token}, gmt_modified = #{gmtModified}, avatar_url = #{avatarUrl}
+    </update>
 
     <select id="findBytoken" parameterType="java.lang.String" resultMap="User-r">
         select access_id, name, token, gmt_create, gmt_modified, avatar_url

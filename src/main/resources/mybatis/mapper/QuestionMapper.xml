@@ -32,8 +32,27 @@
         order by gmt_create desc limit #{offset}, #{size}
     </select>
 
+    <select id="myList" parameterType="HashMap" resultMap="Question-r">
+        select id, user_id, title, describtion, tags, question.gmt_create, question.gmt_modified, view_count, comment_count, like_count
+        from question
+        where user_id = #{accessId}
+        order by gmt_create desc limit #{offset}, #{size}
+    </select>
+
     <select id="getCount" resultType="java.lang.Integer">
         select count(id)
         from question
+    </select>
+
+    <select id="getMyCount" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select count(id)
+        from question
+        where user_id = #{accessId}
+    </select>
+
+    <select id="getByQuestionId" parameterType="java.lang.String" resultMap="Question-r">
+        select id, user_id, title, describtion, tags, question.gmt_create, question.gmt_modified, view_count, comment_count, like_count
+        from question
+        where id = #{id}
     </select>
 </mapper>

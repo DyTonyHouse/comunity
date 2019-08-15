@@ -27,6 +27,7 @@ public class PaginationDTO {
         //由页面问题个数与问题总个数求出需要几个页面
         this.setTotalCount(totalCount);
         this.setTotalPage(this.getTotalCount() % size == 0? this.getTotalCount() / size :(this.getTotalCount() / size) + 1);
+        System.out.println("TotalPage>>>>>>>>>>>>>>>>>>>>>>>>>>>"+this.getTotalPage());
         if (currentPage <= 1){
             this.setCurrentPage(1);
             this.setHasPrevious(false);

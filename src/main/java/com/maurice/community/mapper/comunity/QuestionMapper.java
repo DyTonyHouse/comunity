@@ -5,6 +5,7 @@ import com.maurice.community.entity.Question;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author: Maurice
@@ -18,4 +19,10 @@ public interface QuestionMapper {
     List<Question> list(Integer offset, Integer size);
 
     Integer getCount();
+
+    Integer getMyCount(String accessId);
+
+    List<Question> myList(Map<String, Object> parm);
+
+    Question getByQuestionId(String id);
 }

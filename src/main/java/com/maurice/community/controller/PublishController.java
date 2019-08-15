@@ -4,7 +4,6 @@ import com.maurice.community.entity.Question;
 import com.maurice.community.entity.User;
 import com.maurice.community.service.QuestionService;
 import com.maurice.community.service.UserService;
-import com.maurice.community.utils.Httpd;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -56,8 +55,7 @@ public class PublishController {
             return "publish";
         }
 
-        String token = Httpd.getToken(servletRequest);
-        User user = userService.findByToken(token);
+        User user = (User) servletRequest.getSession().getAttribute("user");
         Question question = new Question();
         question.setUserId(user.getAccessId());
         question.setTitle(title);
