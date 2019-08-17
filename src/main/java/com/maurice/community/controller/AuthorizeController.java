@@ -54,7 +54,7 @@ public class AuthorizeController {
         if (githubUser != null) {
             User user = userService.findByAccessId(githubUser.getId());
             //插入数据库的过程相当于写入 session
-            userService.createOrUpdate(user, githubUser, servletResponse, servletRequest);
+            userService.createOrUpdate(user, githubUser, servletResponse);
 
             return "redirect:/";
         } else {

@@ -3,9 +3,10 @@ package com.maurice.community.service;
 import com.maurice.community.dto.PaginationDTO;
 import com.maurice.community.dto.QuestionDTO;
 import com.maurice.community.entity.Question;
+import com.maurice.community.entity.QuestionExample;
 import com.maurice.community.entity.User;
-import com.maurice.community.mapper.comunity.QuestionMapper;
-import com.maurice.community.mapper.comunity.UserMapper;
+import com.maurice.community.mapper.QuestionMapper;
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,14 +30,16 @@ public class QuestionService {
 
     public PaginationDTO list(Integer currentPage, Integer size){
         //问题总个数
-        Integer totalCount = questionMapper.getCount();
+
+        Integer totalCount = (int)questionMapper.countByExample(new QuestionExample());
 
         PaginationDTO paginationDTO = new PaginationDTO();
         paginationDTO.setPagination(totalCount, currentPage, size);
 
         Integer offset = (paginationDTO.getCurrentPage() - 1) * size;
 
-        List<Question> questionList = questionMapper.list(offset, size);
+        RowBounds rowBounds = new RowBounds(offset,size);
+        List<Question> questionList = questionMapper.selectByExampleWithRowbounds(new QuestionExample(), rowBounds);
 
         List<QuestionDTO> questionDTOS = new ArrayList<>();
         for (Question question : questionList) {
@@ -50,32 +53,24 @@ public class QuestionService {
             questionDTOS.add(questionDTO);
         }
         paginationDTO.setQuestionDTOS(questionDTOS);
-        System.out.println("paginationDTO.getPages():===="+paginationDTO.getPages());
         return paginationDTO;
     };
-
-    public void insertQuestion(Question question){
-        questionMapper.insertQuestion(question);
-    }
 
 
     public PaginationDTO myList(User user, Integer currentPage, Integer size) {
         //问题总个数
-        Integer totalCount = questionMapper.getMyCount(user.getAccessId());
-        System.out.println("user.getAccessId()============="+user.getAccessId());
-        System.out.println("totalCount============="+totalCount);
+        QuestionExample questionExample = new QuestionExample();
+        questionExample.createCriteria().andUserIdEqualTo(user.getAccessId());
+
+        Integer totalCount = (int) questionMapper.countByExample(questionExample);
+
         PaginationDTO paginationDTO = new PaginationDTO();
         paginationDTO.setPagination(totalCount, currentPage, size);
 
         Integer offset = (paginationDTO.getCurrentPage() - 1) * size;
 
-        Map<String, Object> parm = new HashMap<>();
-        parm.put("accessId", user.getAccessId());
-        parm.put("offset", offset);
-        parm.put("size", size);
-        List<Question> questionList = questionMapper.myList(parm);
-        System.out.println("questionList=========================="+questionList);
-        System.out.println("questionList=========================="+questionList.size());
+        List<Question> questionList = questionMapper.selectByExampleWithRowbounds(questionExample, new RowBounds(offset, size));
+
         List<QuestionDTO> questionDTOS = new ArrayList<>();
         for (Question question : questionList) {
             QuestionDTO questionDTO = new QuestionDTO();
@@ -84,14 +79,31 @@ public class QuestionService {
             questionDTOS.add(questionDTO);
         }
         paginationDTO.setQuestionDTOS(questionDTOS);
-        System.out.println("paginationDTO.getPages():===="+paginationDTO.getPages());
         return paginationDTO;
     }
 
 
 
-    public Question getByQuestionId(String id) {
-        Question question = questionMapper.getByQuestionId(id);
+    public Question getByQuestionId(Integer id) {
+        Question question = questionMapper.selectByPrimaryKey(id);
         return question;
+    }
+
+    public void createOrUpdate(Integer id, Question question, User user) {
+        if (id == null){
+            question.setUserId(user.getAccessId());
+            question.setGmtCreate(System.currentTimeMillis());
+            System.out.println("插入了码？？？？？？？？？？？？？？？？？？？？？？/");
+            questionMapper.insert(question);
+        }else {
+            Question dbQuestion = questionMapper.selectByPrimaryKey(id);
+            dbQuestion.setTitle(question.getTitle());
+            dbQuestion.setDescribtion(question.getDescribtion());
+            dbQuestion.setTags(question.getTags());
+            dbQuestion.setGmtModified(System.currentTimeMillis());
+            QuestionExample questionExample = new QuestionExample();
+            questionExample.createCriteria().andIdEqualTo(id);
+            questionMapper.updateByExample(dbQuestion,questionExample);
+        }
     }
 }

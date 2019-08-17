@@ -3,10 +3,10 @@
 <head>
     <title>码匠社区</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <link rel="stylesheet" href="css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="css/bootstrap-theme.min.css"/>
-    <link rel="stylesheet"href="css/comunity.css"/>
-    <script src="js/bootstrap.min.js" type="application/javascript"></script>
+    <link rel="stylesheet" href="/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/css/bootstrap-theme.min.css"/>
+    <link rel="stylesheet"href="/css/comunity.css"/>
+    <script src="/js/bootstrap.min.js" type="application/javascript"></script>
 </head>
 <body>
 
@@ -19,17 +19,18 @@
             <span style="right: auto">问题</span>
             <hr/>
             <form action="/publish" method="post">
+                <input id="id" name="id" type="hidden" th:value="${question.id}">
                 <div class="form-group">
                     <label for="title">问题标题 (简单扼要):</label>
-                    <input type="text" class="form-control" id="title" name="title" placeholder="问题标题..." th:value="${title}">
+                    <input type="text" class="form-control" id="title" name="title" placeholder="问题标题..." th:value="${question.title}">
                 </div>
                 <div class="form-group">
                     <label for="describtion">问题补充 (必填，请参照右侧提示):</label>
-                    <textarea class="form-control" id="describtion" name="describtion" rows="10" th:text="${describiton}"></textarea>
+                    <textarea class="form-control" id="describtion" name="describtion" rows="10" th:text="${question.describtion}"></textarea>
                 </div>
                 <div class="form-group">
                     <label for="tags">添加标签</label>
-                    <input type="text" class="form-control" id="tags" name="tags" placeholder="输入标签 以，分隔" th:value="${tags}">
+                    <input type="text" class="form-control" id="tags" name="tags" placeholder="输入标签 以，分隔" th:value="${question.tags}">
                 </div>
 
                 <div class="row">
