@@ -1,10 +1,14 @@
 package com.maurice.community.service;
 
+import com.maurice.community.advice.CustomizeExceptionHandler;
 import com.maurice.community.dto.PaginationDTO;
 import com.maurice.community.dto.QuestionDTO;
 import com.maurice.community.entity.Question;
 import com.maurice.community.entity.QuestionExample;
 import com.maurice.community.entity.User;
+import com.maurice.community.exception.CustomizeErrorCode;
+import com.maurice.community.exception.CustomizeException;
+import com.maurice.community.exception.ICustomizeErrorCode;
 import com.maurice.community.mapper.QuestionMapper;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.BeanUtils;
@@ -86,6 +90,9 @@ public class QuestionService {
 
     public Question getByQuestionId(Integer id) {
         Question question = questionMapper.selectByPrimaryKey(id);
+        if (question == null){
+            throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+        }
         return question;
     }
 
@@ -93,8 +100,10 @@ public class QuestionService {
         if (id == null){
             question.setUserId(user.getAccessId());
             question.setGmtCreate(System.currentTimeMillis());
-            System.out.println("插入了码？？？？？？？？？？？？？？？？？？？？？？/");
-            questionMapper.insert(question);
+            int isUpdate = questionMapper.insert(question);
+            if (isUpdate != 1){
+                throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+            }
         }else {
             Question dbQuestion = questionMapper.selectByPrimaryKey(id);
             dbQuestion.setTitle(question.getTitle());
@@ -103,7 +112,10 @@ public class QuestionService {
             dbQuestion.setGmtModified(System.currentTimeMillis());
             QuestionExample questionExample = new QuestionExample();
             questionExample.createCriteria().andIdEqualTo(id);
-            questionMapper.updateByExample(dbQuestion,questionExample);
+            int isUpdate = questionMapper.updateByExample(dbQuestion,questionExample);
+            if (isUpdate != 1){
+                throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+            }
         }
     }
 }
