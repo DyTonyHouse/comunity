@@ -7,4 +7,5 @@ package com.maurice.community.exception;
  */
 public interface ICustomizeErrorCode {
     String getMessage();
+    Integer getCode();
 }

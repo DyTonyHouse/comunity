@@ -1,5 +1,5 @@
 body{
-    background-color: #bcb5b5;
+    background-color: #e5e5e5;
 }
 
 .main{
@@ -28,7 +28,7 @@ body{
 }
 
 .media-body {
-    padding-top: 10px;
+    /*padding-top: 11px;*/
 }
 
 .media-heading {
@@ -47,4 +47,101 @@ body{
     padding-bottom: 70px;
     /*color: inherit;*/
     /*background-color: #eee;*/
+}
+
+.media-comment{
+    margin-top: 0px;
+}
+
+.card{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 1px solid rgba(0,0,0,0.125);
+    border-radius: 0.25rem;
+}
+
+
+.markdown {
+    position: relative;
+    letter-spacing: .03em;
+    font-size: 15px;
+    text-overflow: ellipsis;
+    word-wrap: break-word;
+}
+
+.infos {
+    color: #999;
+    margin-bottom: 10px;
+    font-size: 13px;
+}
+
+.card-body{
+    margin: 10px 100px;
+}
+
+.question-title{
+    margin-top: 15px;
+}
+.card .card-header {
+    padding-top: 10px;
+    border-bottom-color: #eee;
+    color: #777;
+}
+
+hr {
+    margin-top: 10px;
+    margin-bottom: 20px;
+    border: 0;
+    border-top: 1px solid #eee;
+}
+
+.menu{
+    position: relative;
+    color: #999;
+    margin-top: 5px;
+}
+
+.menu-content{
+    position: absolute;
+    top: -2px;
+    left: 20px;
+}
+
+.comment-icon{
+    float: right;
+    margin-right: 30px;
+    display: none;
+}
+
+.question-tag{
+    margin-right: 5px;
+}
+
+.content-hr{
+    margin-bottom: 5px;
+    margin-top: 25px;
+}
+.tab-tags{
+    padding-top: 10px;
+}
+
+.tab-tag{
+    margin-right: 5px;
+}
+
+.publish-tag-tab {
+    display: none;
+    margin-top: 10px;
+    padding-top: 10px;
+}
+
+.publish-tag-tab .label-info {
+    white-space: normal;
+    margin: 5px 5px;
+    display: inline-block;
 }

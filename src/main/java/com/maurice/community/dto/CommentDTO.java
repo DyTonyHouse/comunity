@@ -5,20 +5,18 @@ import lombok.Data;
 
 /**
  * @Author: Maurice
- * @Date: 2019/8/13
+ * @Date: 2019/8/21
  * @Description:
  */
 @Data
-public class QuestionDTO {
+public class CommentDTO {
     private Integer id;
-    private String userId;
-    private String title;
-    private String describtion;
-    private String tags;
+    private Integer parentId;
+    private String accessId;
+    private Integer type;
+    private String content;
+    private Long likeCount;
     private Long gmtCreate;
     private Long gmtModified;
-    private Integer viewCount;
-    private Integer commentCount;
-    private Integer likeCount;
     private User user;
 }

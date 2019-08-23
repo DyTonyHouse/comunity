@@ -10,7 +10,16 @@
     <script src="js/bootstrap.min.js" type="application/javascript"></script>
 </head>
 <body>
+<script type="application/javascript">
+    window.onload = function () {
 
+        var closable = window.localStorage.getItem("closable");
+        if (closable == "true"){
+            window.close();
+            window.localStorage.removeItem("closable");
+        }
+    }
+</script>
 <div th:insert="~{header :: nav}"></div>
 
 <div class="container-fluid main">
@@ -21,7 +30,7 @@
             <div class="media" th:each="question:${questions.questionDTOS}">
                 <div class="media-left">
                     <a href="#">
-                        <img class="media-object img-thumbnail" th:src="${question.avatarUrl}">
+                        <img class="media-object img-thumbnail" th:src="${question.user.avatarUrl}">
                     </a>
                 </div>
                 <div class="media-body">

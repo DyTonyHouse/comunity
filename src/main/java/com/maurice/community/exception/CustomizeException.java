@@ -7,17 +7,27 @@ package com.maurice.community.exception;
  */
 public class CustomizeException extends RuntimeException {
     private String message;
+    private Integer code;
 
-    public CustomizeException(String massage){
+    public CustomizeException(Integer code, String massage){
+        this.code = code;
         this.message = massage;
     }
 
-    public CustomizeException(ICustomizeErrorCode code){
-        this.message = code.getMessage();
+    public CustomizeException(ICustomizeErrorCode ErrorCode){
+        this.message = ErrorCode.getMessage();
+        this.code = ErrorCode.getCode();
     }
 
     @Override
     public String getMessage() {
         return message;
     }
+
+    public Integer getCode(){
+        return code;
+    }
+
+
+
 }

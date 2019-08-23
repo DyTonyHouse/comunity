@@ -6,10 +6,13 @@ import com.maurice.community.dto.QuestionDTO;
 import com.maurice.community.entity.Question;
 import com.maurice.community.entity.QuestionExample;
 import com.maurice.community.entity.User;
+import com.maurice.community.entity.UserExample;
 import com.maurice.community.exception.CustomizeErrorCode;
 import com.maurice.community.exception.CustomizeException;
 import com.maurice.community.exception.ICustomizeErrorCode;
 import com.maurice.community.mapper.QuestionMapper;
+import com.maurice.community.mapper.QuestionMapperEx;
+import com.maurice.community.mapper.UserMapper;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +32,8 @@ import java.util.Map;
 public class QuestionService {
     @Autowired
     private QuestionMapper questionMapper;
+    @Autowired
+    private QuestionMapperEx questionMapperEx;
     @Autowired
     private UserService userService;
 
@@ -52,7 +57,7 @@ public class QuestionService {
             QuestionDTO questionDTO = new QuestionDTO();
             BeanUtils.copyProperties(question,questionDTO);
             if (user != null){
-                questionDTO.setAvatarUrl(user.getAvatarUrl());
+                questionDTO.setUser(user);
             }
             questionDTOS.add(questionDTO);
         }
@@ -79,7 +84,7 @@ public class QuestionService {
         for (Question question : questionList) {
             QuestionDTO questionDTO = new QuestionDTO();
             BeanUtils.copyProperties(question,questionDTO);
-            questionDTO.setAvatarUrl(user.getAvatarUrl());
+            questionDTO.setUser(user);
             questionDTOS.add(questionDTO);
         }
         paginationDTO.setQuestionDTOS(questionDTOS);
@@ -88,18 +93,27 @@ public class QuestionService {
 
 
 
-    public Question getByQuestionId(Integer id) {
+    public QuestionDTO getByQuestionId(Integer id) {
         Question question = questionMapper.selectByPrimaryKey(id);
         if (question == null){
             throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
         }
-        return question;
+
+        User user = userService.findByAccessId(question.getUserId());
+        QuestionDTO questionDTO = new QuestionDTO();
+        BeanUtils.copyProperties(question,questionDTO);
+        questionDTO.setUser(user);
+        return questionDTO;
     }
 
     public void createOrUpdate(Integer id, Question question, User user) {
         if (id == null){
             question.setUserId(user.getAccessId());
             question.setGmtCreate(System.currentTimeMillis());
+            question.setGmtModified(question.getGmtCreate());
+            question.setCommentCount(0);
+            question.setViewCount(0);
+            question.setLikeCount(0);
             int isUpdate = questionMapper.insert(question);
             if (isUpdate != 1){
                 throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
@@ -113,9 +127,22 @@ public class QuestionService {
             QuestionExample questionExample = new QuestionExample();
             questionExample.createCriteria().andIdEqualTo(id);
             int isUpdate = questionMapper.updateByExample(dbQuestion,questionExample);
+
             if (isUpdate != 1){
                 throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
             }
         }
     }
+
+    /*
+    * 浏览次数自增
+    **/
+    public void incView(Integer id) {
+        Question question = new Question();
+        question.setId(id);
+        question.setViewCount(1);
+        questionMapperEx.incView(question);
+    }
+
+
 }
